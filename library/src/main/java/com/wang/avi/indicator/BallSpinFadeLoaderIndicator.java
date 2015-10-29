@@ -33,6 +33,8 @@ public class BallSpinFadeLoaderIndicator extends BaseIndicatorController {
             ALPHA,
             ALPHA};
 
+    int index;
+
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
@@ -67,33 +69,24 @@ public class BallSpinFadeLoaderIndicator extends BaseIndicatorController {
     public void createAnimation() {
         int[] delays= {0, 120, 240, 360, 480, 600, 720, 780, 840};
         for (int i = 0; i < 8; i++) {
-            final int index=i;
-            ValueAnimator scaleAnim=ValueAnimator.ofFloat(1,0.4f,1);
-            scaleAnim.setDuration(1000);
-            scaleAnim.setRepeatCount(-1);
-            scaleAnim.setStartDelay(delays[i]);
-            scaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    scaleFloats[index] = (float) animation.getAnimatedValue();
-                    postInvalidate();
-                }
-            });
-            scaleAnim.start();
-
-            ValueAnimator alphaAnim=ValueAnimator.ofInt(255, 77, 255);
-            alphaAnim.setDuration(1000);
-            alphaAnim.setRepeatCount(-1);
-            alphaAnim.setStartDelay(delays[i]);
-            alphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    alphas[index] = (int) animation.getAnimatedValue();
-                    postInvalidate();
-                }
-            });
-            alphaAnim.start();
+            index=i;
+            processScaleAnimation(new float[] {1, 0.4f, 1}, 1000, -1, delays[i], null);
+            processAlphaAnimation(new int[] {255, 77, 255}, 1000, -1, delays[i], null);
         }
+    }
+
+    @Override
+    public void onScaleAnimationUpdate(ValueAnimator animation) {
+        super.onScaleAnimationUpdate(animation);
+        scaleFloats[index] = (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
+
+    @Override
+    public void onAlphaAnimationUpdate(ValueAnimator animation) {
+        super.onAlphaAnimationUpdate(animation);
+        alphas[index] = (int) animation.getAnimatedValue();
+        postInvalidate();
     }
 
     final class Point{

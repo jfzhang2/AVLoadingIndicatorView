@@ -22,6 +22,7 @@ public class BallClipRotatePulseIndicator extends BaseIndicatorController {
         float y=getHeight()/2;
 
         //draw fill circle
+        //绘制实心的圆
         canvas.save();
         canvas.translate(x, y);
         canvas.scale(scaleFloat1, scaleFloat1);
@@ -47,17 +48,8 @@ public class BallClipRotatePulseIndicator extends BaseIndicatorController {
 
     @Override
     public void createAnimation() {
-        ValueAnimator scaleAnim=ValueAnimator.ofFloat(1,0.3f,1);
-        scaleAnim.setDuration(1000);
-        scaleAnim.setRepeatCount(-1);
-        scaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                scaleFloat1 = (float) animation.getAnimatedValue();
-                postInvalidate();
-            }
-        });
-        scaleAnim.start();
+
+        processScaleAnimation(new float[]{1, 0.3f, 1}, 1000, -1, 0, null);
 
         ValueAnimator scaleAnim2=ValueAnimator.ofFloat(1,0.6f,1);
         scaleAnim2.setDuration(1000);
@@ -71,17 +63,20 @@ public class BallClipRotatePulseIndicator extends BaseIndicatorController {
         });
         scaleAnim2.start();
 
-        ValueAnimator rotateAnim=ValueAnimator.ofFloat(0, 180,360);
-        rotateAnim.setDuration(1000);
-        rotateAnim.setRepeatCount(-1);
-        rotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                degrees = (float) animation.getAnimatedValue();
-                postInvalidate();
-            }
-        });
-        rotateAnim.start();
+        processRotateAnimation(new float[]{0, 180,360}, 1000, -1, 0, null);
     }
 
+    @Override
+    public void onScaleAnimationUpdate(ValueAnimator animation) {
+        super.onScaleAnimationUpdate(animation);
+        scaleFloat1 = (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
+
+    @Override
+    public void onDegreeAnimationUpdate(ValueAnimator animation) {
+        super.onDegreeAnimationUpdate(animation);
+        degrees = (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
 }

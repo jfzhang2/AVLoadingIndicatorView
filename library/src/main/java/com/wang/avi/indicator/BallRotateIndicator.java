@@ -43,24 +43,14 @@ public class BallRotateIndicator extends BaseIndicatorController{
 
     @Override
     public void createAnimation() {
-        ValueAnimator scaleAnim=ValueAnimator.ofFloat(0.5f,1,0.5f);
-        scaleAnim.setDuration(1000);
-        scaleAnim.setRepeatCount(-1);
-        scaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                scaleFloat = (float) animation.getAnimatedValue();
-                postInvalidate();
-            }
-        });
-        scaleAnim.start();
-
-        ObjectAnimator rotateAnim=ObjectAnimator.ofFloat(getTarget(),"rotation",0,180,360);
-        rotateAnim.setDuration(1000);
-        rotateAnim.setRepeatCount(-1);
-        rotateAnim.start();
-
+        processScaleAnimation(new float[] {0.5f, 1, 0, 0.5f}, 1000, -1, 0, null);
+        processRotateAnimation(new float[] {0, 180, 360}, 1000, -1, 0, null);
     }
 
-
+    @Override
+    public void onScaleAnimationUpdate(ValueAnimator animation) {
+        super.onScaleAnimationUpdate(animation);
+        scaleFloat = (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
 }

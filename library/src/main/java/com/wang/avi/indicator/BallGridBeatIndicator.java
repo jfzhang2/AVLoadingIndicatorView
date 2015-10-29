@@ -21,6 +21,7 @@ public class BallGridBeatIndicator extends BaseIndicatorController {
             ALPHA,
             ALPHA,
             ALPHA};
+    int index;
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
@@ -48,22 +49,15 @@ public class BallGridBeatIndicator extends BaseIndicatorController {
         int[] delays= {360, 400, 680, 410, 710, -150, -120, 10, 320};
 
         for (int i = 0; i < 9; i++) {
-            final int index=i;
-            ValueAnimator alphaAnim=ValueAnimator.ofInt(255, 168,255);
-            alphaAnim.setDuration(durations[i]);
-            alphaAnim.setRepeatCount(-1);
-            alphaAnim.setStartDelay(delays[i]);
-            alphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    alphas[index] = (int) animation.getAnimatedValue();
-                    postInvalidate();
-                }
-            });
-            alphaAnim.start();
+            index=i;
+            processAlphaAnimation(new int[]{255, 168,255}, durations[i], -1, delays[i], null);
         }
     }
 
-
-
+    @Override
+    public void onAlphaAnimationUpdate(ValueAnimator animation) {
+        super.onAlphaAnimationUpdate(animation);
+        alphas[index] = (int) animation.getAnimatedValue();
+        postInvalidate();
+    }
 }

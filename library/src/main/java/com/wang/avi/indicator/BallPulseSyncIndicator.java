@@ -11,6 +11,7 @@ import com.nineoldandroids.animation.ValueAnimator;
 public class BallPulseSyncIndicator extends BaseIndicatorController {
 
     float[] translateYFloats=new float[3];
+    int index;
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
@@ -32,20 +33,15 @@ public class BallPulseSyncIndicator extends BaseIndicatorController {
         float radius=(getWidth()-circleSpacing*2)/6;
         int[] delays=new int[]{70,140,210};
         for (int i = 0; i < 3; i++) {
-            final int index=i;
-            ValueAnimator scaleAnim=ValueAnimator.ofFloat(getHeight()/2,getHeight()/2-radius*2,getHeight()/2);
-            scaleAnim.setDuration(600);
-            scaleAnim.setRepeatCount(-1);
-            scaleAnim.setStartDelay(delays[i]);
-            scaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    translateYFloats[index] = (float) animation.getAnimatedValue();
-                    postInvalidate();
-                }
-            });
-            scaleAnim.start();
+            index=i;
+            processScaleAnimation(new float[] {getHeight()/2,getHeight()/2-radius*2,getHeight()/2}, 600, -1, delays[i], null);
         }
     }
 
+    @Override
+    public void onScaleAnimationUpdate(ValueAnimator animation) {
+        super.onScaleAnimationUpdate(animation);
+        translateYFloats[index] = (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
 }

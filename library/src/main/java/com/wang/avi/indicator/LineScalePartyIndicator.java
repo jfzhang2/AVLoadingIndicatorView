@@ -19,6 +19,7 @@ public class LineScalePartyIndicator extends BaseIndicatorController {
             SCALE,
             SCALE,
             SCALE,};
+    int index;
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
@@ -37,23 +38,17 @@ public class LineScalePartyIndicator extends BaseIndicatorController {
     @Override
     public void createAnimation() {
         long[] durations=new long[]{1260, 430, 1010, 730};
-        long[] delays=new long[]{770, 290, 280, 740};
+        int[] delays=new int[]{770, 290, 280, 740};
         for (int i = 0; i < 4; i++) {
-            final int index=i;
-            ValueAnimator scaleAnim=ValueAnimator.ofFloat(1,0.4f,1);
-            scaleAnim.setDuration(durations[i]);
-            scaleAnim.setRepeatCount(-1);
-            scaleAnim.setStartDelay(delays[i]);
-            scaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    scaleFloats[index] = (float) animation.getAnimatedValue();
-                    postInvalidate();
-                }
-            });
-            scaleAnim.start();
+            index=i;
+            processScaleAnimation(new float[] {1,0.4f,1}, durations[i], -1, delays[i], null);
         }
     }
 
-
+    @Override
+    public void onScaleAnimationUpdate(ValueAnimator animation) {
+        super.onScaleAnimationUpdate(animation);
+        scaleFloats[index] = (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
 }

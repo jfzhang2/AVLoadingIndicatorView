@@ -2,7 +2,6 @@ package com.wang.avi.indicator;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 import com.nineoldandroids.animation.ValueAnimator;
@@ -12,6 +11,7 @@ import com.nineoldandroids.animation.ValueAnimator;
  */
 public class BallScaleRippleMultipleIndicator extends BallScaleMultipleIndicator{
 
+    int index;
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
@@ -22,37 +22,25 @@ public class BallScaleRippleMultipleIndicator extends BallScaleMultipleIndicator
 
     @Override
     public void createAnimation() {
-        long[] delays=new long[]{0, 200, 400};
+        int[] delays=new int[]{0, 200, 400};
         for (int i = 0; i < 3; i++) {
-            final int index=i;
-            ValueAnimator scaleAnim=ValueAnimator.ofFloat(0,1);
-            scaleAnim.setInterpolator(new LinearInterpolator());
-            scaleAnim.setDuration(1000);
-            scaleAnim.setRepeatCount(-1);
-            scaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    scaleFloats[index] = (float) animation.getAnimatedValue();
-                    postInvalidate();
-                }
-            });
-            scaleAnim.setStartDelay(delays[i]);
-            scaleAnim.start();
-
-            ValueAnimator alphaAnim=ValueAnimator.ofInt(0,255);
-            scaleAnim.setInterpolator(new LinearInterpolator());
-            alphaAnim.setDuration(1000);
-            alphaAnim.setRepeatCount(-1);
-            alphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    alphaInts[index] = (int) animation.getAnimatedValue();
-                    postInvalidate();
-                }
-            });
-            scaleAnim.setStartDelay(delays[i]);
-            alphaAnim.start();
+            index=i;
+            processScaleAnimation(new float[] {0, 1}, 1000, -1, delays[i], new LinearInterpolator());
+            processAlphaAnimation(new int[] {0, 255}, 1000, -1, delays[i], new LinearInterpolator());
         }
     }
 
+    @Override
+    public void onScaleAnimationUpdate(ValueAnimator animation) {
+        super.onScaleAnimationUpdate(animation);
+        scaleFloats[index] = (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
+
+    @Override
+    public void onAlphaAnimationUpdate(ValueAnimator animation) {
+        super.onAlphaAnimationUpdate(animation);
+        alphaInts[index] = (int) animation.getAnimatedValue();
+        postInvalidate();
+    }
 }

@@ -1,9 +1,5 @@
 package com.wang.avi.indicator;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
-
 import com.nineoldandroids.animation.ValueAnimator;
 
 /**
@@ -11,24 +7,20 @@ import com.nineoldandroids.animation.ValueAnimator;
  */
 public class LineScalePulseOutRapidIndicator extends LineScaleIndicator {
 
+    int index;
     @Override
     public void createAnimation() {
-        long[] delays=new long[]{400,200,0,200,400};
+        int[] delays=new int[]{400,200,0,200,400};
         for (int i = 0; i < 5; i++) {
-            final int index=i;
-            ValueAnimator scaleAnim=ValueAnimator.ofFloat(1,0.4f,1);
-            scaleAnim.setDuration(1000);
-            scaleAnim.setRepeatCount(-1);
-            scaleAnim.setStartDelay(delays[i]);
-            scaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    scaleYFloats[index] = (float) animation.getAnimatedValue();
-                    postInvalidate();
-                }
-            });
-            scaleAnim.start();
+            index=i;
+            processScaleAnimation(new float[] {1,0.4f,1}, 1000, -1, delays[i], null);
         }
     }
 
+    @Override
+    public void onScaleAnimationUpdate(ValueAnimator animation) {
+        super.onScaleAnimationUpdate(animation);
+        scaleYFloats[index] = (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
 }

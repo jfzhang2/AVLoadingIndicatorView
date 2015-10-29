@@ -14,6 +14,7 @@ public class CubeTransitionIndicator extends BaseIndicatorController {
 
     float[] translateX=new float[2],translateY=new float[2];
     float degrees,scaleFloat=1.0f;
+    int index;
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
@@ -35,65 +36,49 @@ public class CubeTransitionIndicator extends BaseIndicatorController {
         float startX=getWidth()/5;
         float startY=getHeight()/5;
         for (int i = 0; i < 2; i++) {
-            final int index=i;
+            index=i;
             translateX[index]=startX;
-            ValueAnimator translationXAnim=ValueAnimator.ofFloat(startX,getWidth()-startX,getWidth()-startX, startX,startX);
-            if (i==1){
-                translationXAnim=ValueAnimator.ofFloat(getWidth()-startX,startX,startX, getWidth()-startX,getWidth()-startX);
+            float[] valueXArray = new float[] {startX,getWidth()-startX,getWidth()-startX, startX,startX};
+            if (i == 1) {
+                valueXArray = new float[] {getWidth()-startX,startX,startX, getWidth()-startX,getWidth()-startX};
             }
-            translationXAnim.setInterpolator(new LinearInterpolator());
-            translationXAnim.setDuration(1600);
-            translationXAnim.setRepeatCount(-1);
-            translationXAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    translateX[index] = (float) animation.getAnimatedValue();
-                    postInvalidate();
-                }
-            });
-            translationXAnim.start();
+            processTranslateAnimation(valueXArray, 1600, -1, 0, new LinearInterpolator());
             translateY[index]=startY;
-            ValueAnimator translationYAnim=ValueAnimator.ofFloat(startY,startY,getHeight()-startY,getHeight()- startY,startY);
-            if (i==1){
-                translationYAnim=ValueAnimator.ofFloat(getHeight()-startY,getHeight()-startY,startY,startY,getHeight()-startY);
+            float[] valueYArray = new float[] {startY,startY,getHeight()-startY,getHeight()- startY,startY};
+            if (i == 1) {
+                valueYArray = new float[] {getHeight()-startY,getHeight()-startY,startY,startY,getHeight()-startY};
             }
-            translationYAnim.setDuration(1600);
-            translationYAnim.setInterpolator(new LinearInterpolator());
-            translationYAnim.setRepeatCount(-1);
-            translationYAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    translateY[index] = (float) animation.getAnimatedValue();
-                    postInvalidate();
-                }
-            });
-            translationYAnim.start();
+            processTranslateYAnimation(valueYArray, 1600, -1, 0, new LinearInterpolator());
         }
+        processScaleAnimation(new float[] {1,0.5f,1,0.5f,1}, 1600, -1, 0, new LinearInterpolator());
+        processRotateAnimation(new float[] {0,180,360,1.5f*360,2*360}, 1600, -1, 0, new LinearInterpolator());
+    }
 
-        ValueAnimator scaleAnim=ValueAnimator.ofFloat(1,0.5f,1,0.5f,1);
-        scaleAnim.setDuration(1600);
-        scaleAnim.setInterpolator(new LinearInterpolator());
-        scaleAnim.setRepeatCount(-1);
-        scaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                scaleFloat = (float) animation.getAnimatedValue();
-                postInvalidate();
-            }
-        });
-        scaleAnim.start();
+    @Override
+    public void onTranslateAnimationUpdate(ValueAnimator animation) {
+        super.onTranslateAnimationUpdate(animation);
+        translateX[index] = (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
 
-        ValueAnimator rotateAnim=ValueAnimator.ofFloat(0,180,360,1.5f*360,2*360);
-        rotateAnim.setDuration(1600);
-        rotateAnim.setInterpolator(new LinearInterpolator());
-        rotateAnim.setRepeatCount(-1);
-        rotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                degrees = (float) animation.getAnimatedValue();
-                postInvalidate();
-            }
-        });
-        rotateAnim.start();
+    @Override
+    public void onTranslateYAnimationUpdate(ValueAnimator animation) {
+        super.onTranslateYAnimationUpdate(animation);
+        translateY[index] = (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
+
+    @Override
+    public void onScaleAnimationUpdate(ValueAnimator animation) {
+        super.onScaleAnimationUpdate(animation);
+        scaleFloat = (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
+
+    @Override
+    public void onDegreeAnimationUpdate(ValueAnimator animation) {
+        super.onDegreeAnimationUpdate(animation);
+        degrees = (float) animation.getAnimatedValue();
+        postInvalidate();
     }
 }

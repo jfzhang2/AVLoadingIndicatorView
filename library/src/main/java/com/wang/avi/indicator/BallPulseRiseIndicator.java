@@ -25,11 +25,8 @@ public class BallPulseRiseIndicator extends BaseIndicatorController{
 
     @Override
     public void createAnimation() {
-        PropertyValuesHolder rotation6=PropertyValuesHolder.ofFloat("rotationX",0,360);
-        ObjectAnimator animator=ObjectAnimator.ofPropertyValuesHolder(getTarget(), rotation6);
-        animator.setInterpolator(new LinearInterpolator());
-        animator.setRepeatCount(-1);
-        animator.setDuration(1500);
-        animator.start();
+        String[] valueStringArray = {"rotationX"};
+        float[][] valueFloatArray = {{0, 360}};
+        processViewHolder(valueStringArray, valueFloatArray, -1, 1500, new LinearInterpolator());
     }
 }

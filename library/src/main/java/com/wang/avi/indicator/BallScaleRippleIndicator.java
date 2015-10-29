@@ -21,31 +21,21 @@ public class BallScaleRippleIndicator extends BallScaleIndicator {
 
     @Override
     public void createAnimation() {
-        ValueAnimator scaleAnim=ValueAnimator.ofFloat(0,1);
-        scaleAnim.setInterpolator(new LinearInterpolator());
-        scaleAnim.setDuration(1000);
-        scaleAnim.setRepeatCount(-1);
-        scaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                scale = (float) animation.getAnimatedValue();
-                postInvalidate();
-            }
-        });
-        scaleAnim.start();
-
-        ValueAnimator alphaAnim=ValueAnimator.ofInt(0, 255);
-        alphaAnim.setInterpolator(new LinearInterpolator());
-        alphaAnim.setDuration(1000);
-        alphaAnim.setRepeatCount(-1);
-        alphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                alpha = (int) animation.getAnimatedValue();
-                postInvalidate();
-            }
-        });
-        alphaAnim.start();
+        processScaleAnimation(new float[] {0, 1}, 1000, -1, 0, new LinearInterpolator());
+        processAlphaAnimation(new int[] {0, 255}, 1000, -1, 0, new LinearInterpolator());
     }
 
+    @Override
+    public void onScaleAnimationUpdate(ValueAnimator animation) {
+        super.onScaleAnimationUpdate(animation);
+        scale = (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
+
+    @Override
+    public void onAlphaAnimationUpdate(ValueAnimator animation) {
+        super.onAlphaAnimationUpdate(animation);
+        alpha = (int) animation.getAnimatedValue();
+        postInvalidate();
+    }
 }

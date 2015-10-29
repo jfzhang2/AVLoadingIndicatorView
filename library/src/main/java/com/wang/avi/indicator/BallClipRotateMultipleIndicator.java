@@ -50,29 +50,21 @@ public class BallClipRotateMultipleIndicator extends BaseIndicatorController{
 
     @Override
     public void createAnimation() {
-        ValueAnimator scaleAnim=ValueAnimator.ofFloat(1,0.6f,1);
-        scaleAnim.setDuration(1000);
-        scaleAnim.setRepeatCount(-1);
-        scaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                scaleFloat = (float) animation.getAnimatedValue();
-                postInvalidate();
-            }
-        });
-        scaleAnim.start();
-
-        ValueAnimator rotateAnim=ValueAnimator.ofFloat(0, 180,360);
-        rotateAnim.setDuration(1000);
-        rotateAnim.setRepeatCount(-1);
-        rotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                degrees = (float) animation.getAnimatedValue();
-                postInvalidate();
-            }
-        });
-        rotateAnim.start();
+        processScaleAnimation(new float[]{1, 0.6f, 1}, 1000, -1, 0, null);
+        processRotateAnimation(new float[]{0, 180, 360}, 1000, -1, 0, null);
     }
 
+    @Override
+    public void onScaleAnimationUpdate(ValueAnimator animation) {
+        super.onScaleAnimationUpdate(animation);
+        scaleFloat = (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
+
+    @Override
+    public void onDegreeAnimationUpdate(ValueAnimator animation) {
+        super.onDegreeAnimationUpdate(animation);
+        degrees = (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
 }

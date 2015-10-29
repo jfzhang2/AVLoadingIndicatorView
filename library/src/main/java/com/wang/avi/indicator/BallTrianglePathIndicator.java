@@ -12,6 +12,7 @@ import com.nineoldandroids.animation.ValueAnimator;
 public class BallTrianglePathIndicator extends BaseIndicatorController {
 
     float[] translateX=new float[3],translateY=new float[3];
+    int index;
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
@@ -30,45 +31,37 @@ public class BallTrianglePathIndicator extends BaseIndicatorController {
         float startX=getWidth()/5;
         float startY=getWidth()/5;
         for (int i = 0; i < 3; i++) {
-            final int index=i;
-            ValueAnimator translateXAnim=ValueAnimator.ofFloat(getWidth()/2,getWidth()-startX,startX,getWidth()/2);
-            if (i==1){
-                translateXAnim=ValueAnimator.ofFloat(getWidth()-startX,startX,getWidth()/2,getWidth()-startX);
-            }else if (i==2){
-                translateXAnim=ValueAnimator.ofFloat(startX,getWidth()/2,getWidth()-startX,startX);
-            }
-            ValueAnimator translateYAnim=ValueAnimator.ofFloat(startY,getHeight()-startY,getHeight()-startY,startY);
-            if (i==1){
-                translateYAnim=ValueAnimator.ofFloat(getHeight()-startY,getHeight()-startY,startY,getHeight()-startY);
-            }else if (i==2){
-                translateYAnim=ValueAnimator.ofFloat(getHeight()-startY,startY,getHeight()-startY,getHeight()-startY);
-            }
+            index=i;
 
-            translateXAnim.setDuration(2000);
-            translateXAnim.setInterpolator(new LinearInterpolator());
-                translateXAnim.setRepeatCount(-1);
-            translateXAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    translateX [index]= (float) animation.getAnimatedValue();
-                    postInvalidate();
-                }
-            });
-            translateXAnim.start();
+            float[] valueArray = new float[] {getWidth()/2,getWidth()-startX,startX,getWidth()/2};
+            if (i == 1) {
+                valueArray = new float[] {getWidth()-startX,startX,getWidth()/2,getWidth()-startX};
+            } else if (i == 2) {
+                valueArray = new float[] {startX,getWidth()/2,getWidth()-startX,startX};
+            }
+            processTranslateAnimation(valueArray, 2000, -1, 0, new LinearInterpolator());
 
-            translateYAnim.setDuration(2000);
-            translateYAnim.setInterpolator(new LinearInterpolator());
-            translateYAnim.setRepeatCount(-1);
-            translateYAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    translateY [index]= (float) animation.getAnimatedValue();
-                    postInvalidate();
-                }
-            });
-            translateYAnim.start();
+            float[] valueYArray = new float[] {startY,getHeight()-startY,getHeight()-startY,startY};
+            if (i == 1) {
+                valueYArray = new float[] {getHeight()-startY,getHeight()-startY,startY,getHeight()-startY};
+            } else if (i == 2) {
+                valueYArray = new float[] {getHeight()-startY,startY,getHeight()-startY,getHeight()-startY};
+            }
+            processTranslateYAnimation(valueYArray, 2000, -1, 0, new LinearInterpolator());
         }
     }
 
+    @Override
+    public void onTranslateAnimationUpdate(ValueAnimator animation) {
+        super.onTranslateAnimationUpdate(animation);
+        translateX [index]= (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
 
+    @Override
+    public void onTranslateYAnimationUpdate(ValueAnimator animation) {
+        super.onTranslateYAnimationUpdate(animation);
+        translateY [index]= (float) animation.getAnimatedValue();
+        postInvalidate();
+    }
 }
